@@ -30,3 +30,5 @@ for x in z_pred:
         wrong=wrong+1
 print("accuraccy1= ",right/total,"accuraccy2= ",wrong/total, "\n")
 print("z_pred", z_pred)
+
+
