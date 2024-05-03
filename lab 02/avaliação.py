@@ -1,28 +1,44 @@
-from sklearn.datasets import load_digits
+import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, classification_report
+import pandas as pd
+import pickle as p1
 
-# Carregar o conjunto de dados Optdigits
-optdigits = load_digits()
+# Load optdigits dataset from GitHub
+optdigits = pd.read_csv("../lab 02/datasets/optdigits.tes", sep=",", header=None)
 
-# Extrair as matrizes de características (X) e os vetores de classes (y)
-X = optdigits.data
-y = optdigits.target
+# Extract features and target
+X = optdigits.iloc[:, :-1]  # Features are all columns except the last one
+y = optdigits.iloc[:, -1]   # Target is the last column
 
-# Dividir os dados em conjuntos de treino e teste
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Load training data from file
+XX = p1.load(open('../lab 02/esp', 'rb'))
+print(type(XX))
+print(XX.shape)
 
-# Definir o classificador KNN
+
+# Use the same data for testing
+X_test, y_test = X, y
+
+# Define the KNN classifier
 n_neighbors = 15
 clf = KNeighborsClassifier(n_neighbors)
 
-# Treinar o classificador KNN com os dados de treino
-clf.fit(X_train, y_train)
+# Train the KNN classifier with the training data
+clf.fit(XX, y)
 
-# Fazer previsões nos dados de treino
-y_pred_train = clf.predict(X_train)
+# Make predictions on the training and testing data
+y_pred_train = clf.predict(XX)
+y_pred_test = clf.predict(X_test)
 
-# Calcular a precisão do classificador nos dados de treino
-accuracy_train = accuracy_score(y_train, y_pred_train)
+# Calculate the accuracy of the classifier on the training and testing data
+accuracy_train = accuracy_score(y, y_pred_train)
+accuracy_test = accuracy_score(y_test, y_pred_test)
+
 print("Accuracy on training data:", accuracy_train)
+print("Accuracy on test data:", accuracy_test)
+
+# Print a classification report
+print(classification_report(y_test, y_pred_test))
